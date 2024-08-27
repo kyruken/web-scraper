@@ -1,16 +1,23 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
-func normalizeURL(inputURL string) string {
+func normalizeURL(inputURL string) (string, error) {
 
 	formattedString := ""
 
 	for i, b := range inputURL {
 		currentChar := string(b)
 		if currentChar == ":" {
+			protocol := inputURL[0:i]
+
+			if protocol != "http" && protocol != "https" {
+				return inputURL, fmt.Errorf("error with protocol")
+			}
+
 			formattedString = inputURL[i+3 : len(inputURL)]
-			fmt.Println("change string ", formattedString)
 		}
 		if currentChar == "w" && string(inputURL[i+1]) == "w" && string(inputURL[i+2]) == "w" && string(inputURL[i+3]) == "." {
 			formattedString = inputURL[i+4 : len(inputURL)]
@@ -23,5 +30,5 @@ func normalizeURL(inputURL string) string {
 		formattedString = formattedString[:len(formattedString)-1]
 	}
 
-	return formattedString
+	return formattedString, nil
 }
